@@ -1,7 +1,6 @@
 package data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,9 +14,10 @@ public final class StationReading implements Serializable {
     private static final long serialVersionUID = 7993796581494284298L;
 
     /**
+     * FIXME: find way to save as LocalDateTime
      * time of entry .
      */
-    private LocalDateTime time;
+    private String time;
 
     /**
      * geohash location of station.

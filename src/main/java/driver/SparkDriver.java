@@ -3,7 +3,6 @@ package driver;
 import static java.lang.String.format;
 
 import data.StationReading;
-import java.time.LocalDateTime;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.function.Function;
@@ -38,10 +37,9 @@ public class SparkDriver {
 
         //if we want based on the .csv file what we get to be what spark automatically pushes to ES
         conf.set("es.index.auto.create", "true");
-
-//        conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
-//        conf.set("spark.kryo.registrator", CustomKryoRegistrator.class.getName());
-//        conf.set("spark.kryoserializer.buffer", "128m");
+        conf.set("spark.serializer","org.apache.spark.serializer.KryoSerializer");
+        conf.set("spark.kryo.registrator", CustomKryoRegistrator.class.getName());
+        conf.set("spark.kryoserializer.buffer", "128m");
 //        conf.registerKryoClasses(new Class<?>[]{
 //            Class.forName("com.databricks.spark.csv.DefaultSource")});
 //        conf.set("spark.kryo.registrationRequired", "true");
@@ -65,7 +63,7 @@ public class SparkDriver {
             .javaRDD()
             .map((Function<Row, StationReading>) row -> {
 
-                LocalDateTime time = (row.getTimestamp(0)).toLocalDateTime();
+                String time = row.getTimestamp(0).toString();
                 String geoHash = row.getString(1);
                 int P1 = row.getInt(2);
                 int P2 = row.getInt(3);

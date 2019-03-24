@@ -11,17 +11,27 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <scala.version>2.10</scala.version>
-        <spark.libs.version>[2.2.0,)</spark.libs.version>
-        <elasticsearch.hadoop.version>6.1.3</elasticsearch.hadoop.version>
+        <scala.binary.version>2.11</scala.binary.version>
+        <spark.libs.version>2.1.1</spark.libs.version>
+        <elasticsearch.hadoop.version>6.6.2</elasticsearch.hadoop.version>
         <maven.comiler.version>3.7.0</maven.comiler.version>
         <log4j.version>2.7</log4j.version>
         <sure.fire.version>2.20.1</sure.fire.version>
         <maven.assembly.plugin.version>2.4.1</maven.assembly.plugin.version>
         <lombok.version>1.18.2</lombok.version>
+        <spark-csv.version>1.4.0</spark-csv.version>
+        <univocity-parsers.version>2.8.1</univocity-parsers.version>
     </properties>
 
     <dependencies>
+
+        <!-- Miscellaneous -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -39,79 +49,42 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <!-- ES-HADOOP-Spark Connector -->
+
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch-hadoop</artifactId>
             <version>${elasticsearch.hadoop.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang3</artifactId>
-                </exclusion>
-                <!--<exclusion>-->
-                    <!--<groupId>commons-lang</groupId>-->
-                    <!--<artifactId>commons-lang</artifactId>-->
-                <!--</exclusion>-->
-            </exclusions>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>commons-collections</groupId>-->
-            <!--<artifactId>commons-collections</artifactId>-->
-            <!--<version>3.2.2</version>-->
-        <!--</dependency>-->
+        <!-- Spark -->
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.binary.version}</artifactId>
+            <version>${spark.libs.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.binary.version}</artifactId>
+            <version>${spark.libs.version}</version>
+        </dependency>
+
+        <!-- CSV Spark Handling -->
 
         <dependency>
             <groupId>com.databricks</groupId>
-            <artifactId>spark-csv_2.10</artifactId>
-            <version>1.5.0</version>
+            <artifactId>spark-csv_${scala.binary.version}</artifactId>
+            <version>${spark-csv.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
-            <version>2.8.1</version>
+            <version>${univocity-parsers.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-core_2.10</artifactId>
-            <version>${spark.libs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.commons</groupId>
-                    <artifactId>commons-lang3</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.10</artifactId>
-            <version>${spark.libs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang3</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-lang</groupId>
-                    <artifactId>commons-lang</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-        </dependency>
 
     </dependencies>
 
