@@ -49,6 +49,14 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <!-- ES -->
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.hadoop.version}</version>
+        </dependency>
+
         <!-- ES-HADOOP-Spark Connector -->
 
         <dependency>
