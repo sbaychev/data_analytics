@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#WORK IN PROGRESS
 
 docker stop es
 docker rm es
