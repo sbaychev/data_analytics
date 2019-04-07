@@ -60,6 +60,7 @@ public class SparkDriver {
         rowDataset.schema();
 
         System.out.println(format("Number of Row Lines: %d", rowDataset.count()));
+
         LOGGER.info(format("Number of Row Lines: %d", rowDataset.count()));
 
         JavaRDD<StationReading> stationReadingJavaRDD = rowDataset
@@ -68,7 +69,9 @@ public class SparkDriver {
             .filter(Objects::nonNull);
 
         LOGGER.info(format("Records submitted to ES: %d", stationReadingJavaRDD.count()));
+
         System.out.println(format("Records submitted to ES: %d", stationReadingJavaRDD.count()));
+
         stationReadingJavaRDD.foreach(stationReadings -> System.out.println(stationReadings.toString()));
         JavaEsSpark.saveToEs(stationReadingJavaRDD, "stations/day-readings");
 
