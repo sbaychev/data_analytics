@@ -3,6 +3,8 @@ package driver;
 import static java.lang.String.format;
 
 import data.StationReading;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -11,6 +13,7 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.elasticsearch.common.geo.GeoHashUtils;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.spark.rdd.api.java.JavaEsSpark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,8 +117,8 @@ public class SparkDriver {
 
         if (isGeoHashInSofia(row.getString(1))) {
 
-            String time = row.getTimestamp(0).toString();
-            String geoHash = row.getString(1);
+            Timestamp time = row.getTimestamp(0);
+            GeoPoint geoHash = GeoPoint.fromGeohash(row.getString(1));
             int P1 = row.getInt(2);
             int P2 = row.getInt(3);
             int temperature = row.getInt(4);

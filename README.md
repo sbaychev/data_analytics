@@ -13,6 +13,8 @@ Once the XXXX file gets processed, we send it to the well known ElasticSearch in
 What else is there?
 -
 
+--- Create Index Pattern in Kibana
+
 - createXXXXXIndex.sh    - does what it says, creates the stations index, with its schema - no data
 - deleteXXXXXIndex.sh    - does what it says, deletes the stations index, with its schema and data - similar to SQL DROP Table
 - elasticsearch.yml         - the elastic search configuration file
@@ -31,6 +33,12 @@ Good to know?
 
 Sample Walk Through?
 -
+
+docker-compose up
+login to grafana (admin:admin)
+setup data source: http://<elastic-container-ip>:9200
+have to use elasticsearch container IP, as the hostname won't work
+find IP with docker inspect grafanaelasticsearch_elasticsearch_1 | grep IPAddress
 
 1. Execute `windows_start_es.bat` or `unix_start_es.sh`
 2. [TODO] Execute script file xyz or wtp and the SparkDriver gets to run.. 

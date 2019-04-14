@@ -1,8 +1,10 @@
 package data;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.elasticsearch.common.geo.GeoPoint;
 
 /**
  * Data Class.
@@ -14,15 +16,14 @@ public final class StationReading implements Serializable {
     private static final long serialVersionUID = 7993796581494284298L;
 
     /**
-     * FIXME: find way to save as LocalDateTime
      * time of entry .
      */
-    private String time;
+    private Timestamp time;
 
     /**
      * geohash location of station.
      */
-    private String geoHash;
+    private GeoPoint geoHash;
 
     /**
      * PM1 .

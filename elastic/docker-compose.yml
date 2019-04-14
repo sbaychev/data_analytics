@@ -31,23 +31,48 @@ services:
     networks:
       - backend
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana-oss:6.6.2
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-    depends_on:
-      - elasticsearch
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "20"
-        max-size: "50"
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana-oss:6.6.2
+#    container_name: kibana
+##    environment:
+##      map.regionmap:
+##        includeElasticMapsService: false
+##        layers:
+##          - name: "Map of Sofia"
+##            url: "http://localhost:8080/sofia_regions.geojson"
+##            attribution: "https://exploratory.io/maps"
+##            fields:
+##              - name: "cartodb_id"
+##                description: "artodb_id"
+##              - name: "stroke_opacity"
+##                description: "stroke_opacity"
+##              - name: "stroke_width"
+##                description: "stroke_width"
+##              - name: "name"
+##                description: "Region Name"
+##              - name: "fill"
+##                description: "fill"
+#    depends_on:
+#      - elasticsearch
+#    links:
+#      - elasticsearch
+#    logging:
+#      driver: "json-file"
+#      options:
+#        max-file: "20"
+#        max-size: "50"
+#    volumes:
+#      - esdata:/usr/share/elasticsearch/data
+#      - esdata:/usr/share/elasticsearch/logs
+#    ports:
+#      - 5601:5601
+  grafana:
+    image: grafana/grafana:5.0.4
+    container_name: grafana
     volumes:
-      - esdata:/usr/share/elasticsearch/data
-      - esdata:/usr/share/elasticsearch/logs
+      - ./data/grafana:/var/lib/grafana
     ports:
-      - 5601:5601
+      - 3000:3000
     networks:
       - backend
 
