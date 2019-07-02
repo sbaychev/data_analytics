@@ -1,78 +1,40 @@
 version: '3'
 services:
-#WORK IN PROGRESS
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.0
     container_name: elasticsearch
-    environment:
-      discovery.type: single-node
-      bootstrap.memory_lock: "false"
-      cluster.name: "docker-cluster"
-      http.port: 9200
-      transport.tcp.port: 9300
-      network.host: 0.0.0.0
-      node.data: "true"
-      node.master: "true"
-      node.name: "node_1"
-      node.max_local_storage_nodes: 2
-      discovery.zen.minimum_master_nodes: 1
-      discovery.zen.ping.unicast.hosts: "127.0.0.1:9300"
-#      xpack.security.enabled: "false"
+    volumes:
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - esdata:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/logs
     logging:
       driver: "json-file"
       options:
         max-file: "20"
         max-size: "50"
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-      - esdata:/usr/share/elasticsearch/logs
     ports:
       - 9200:9200
     networks:
       - backend
 
-#  kibana:
-#    image: docker.elastic.co/kibana/kibana-oss:6.6.2
-#    container_name: kibana
-##    environment:
-##      map.regionmap:
-##        includeElasticMapsService: false
-##        layers:
-##          - name: "Map of Sofia"
-##            url: "http://localhost:8080/sofia_regions.geojson"
-##            attribution: "https://exploratory.io/maps"
-##            fields:
-##              - name: "cartodb_id"
-##                description: "artodb_id"
-##              - name: "stroke_opacity"
-##                description: "stroke_opacity"
-##              - name: "stroke_width"
-##                description: "stroke_width"
-##              - name: "name"
-##                description: "Region Name"
-##              - name: "fill"
-##                description: "fill"
-#    depends_on:
-#      - elasticsearch
-#    links:
-#      - elasticsearch
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-file: "20"
-#        max-size: "50"
-#    volumes:
-#      - esdata:/usr/share/elasticsearch/data
-#      - esdata:/usr/share/elasticsearch/logs
-#    ports:
-#      - 5601:5601
-  grafana:
-    image: grafana/grafana:5.0.4
-    container_name: grafana
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.3.0
     volumes:
-      - ./data/grafana:/var/lib/grafana
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      - esdata:/usr/share/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/logs
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "20"
+        max-size: "50"
     ports:
-      - 3000:3000
+      - 5601:5601
     networks:
       - backend
 

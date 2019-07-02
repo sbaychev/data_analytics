@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.elasticsearch.common.geo.GeoPoint;
 
 /**
  * Data Class.
@@ -16,38 +15,37 @@ public final class StationReading implements Serializable {
     private static final long serialVersionUID = 7993796581494284298L;
 
     /**
-     * time of entry .
+     * lat&lon location of station.
      */
-    private Timestamp time;
-
-    /**
-     * geohash location of station.
-     */
-    private GeoPoint geoHash;
-
-    /**
-     * PM1 .
-     */
-    private int P1;
-
-    /**
-     * PM2.
-     */
-    private int P2;
-
-    /**
-     * temperature.
-     */
-    private int temperature;
+    private GeoPoint geopoint;
 
     /**
      * humidity.
      */
-    private int humidity;
+    private long humidity;
+
+    /**
+     * PM1.
+     */
+    private long P1;
+
+    /**
+     * PM2.
+     */
+    private long P2;
 
     /**
      * pressure.
      */
-    private int pressure;
+    private long pressure;
 
+    /**
+     * temperature.
+     */
+    private long temperature;
+
+    /**
+     * time of entry.
+     */
+    private Timestamp time;
 }

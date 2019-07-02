@@ -2,9 +2,9 @@ package driver;
 
 import static java.lang.String.format;
 
+import data.GeoPoint;
 import data.StationReading;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -13,7 +13,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.elasticsearch.common.geo.GeoHashUtils;
-import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.spark.rdd.api.java.JavaEsSpark;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,23 +24,17 @@ public class SparkDriver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SparkDriver.class);
 
-    public static void main(final String... args) throws ClassNotFoundException {
+    public static void main(final String... args) {
+
 
         SparkConf conf = new SparkConf()
             .setAppName("spark ingestion and es processing")
             .setMaster("local[*]");
 
         conf.set("es.nodes", "localhost:9200");
-
-        // Whether to discover the nodes within the ElasticSearch cluster or only to use the ones given
         conf.set("es.nodes.discovery", "false");
-
-        // In this mode, the connector disables discovery and only connects through the declared es.nodes during all operations,
-        // including reads and writes. Note that in this mode, performance is highly affected
         conf.set("es.nodes.wan.only", "true");
-
-        // If we want based on the .csv file what we get to be what spark automatically pushes to ES index
-        conf.set("es.index.auto.create", "true");
+        conf.set("es.index.auto.create", "false");
         conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
         conf.set("spark.kryo.registrator", CustomKryoRegistrator.class.getName());
         conf.set("spark.kryoserializer.buffer", "128m");
@@ -55,14 +48,10 @@ public class SparkDriver {
             .format("com.databricks.spark.csv")
             .option("header", "true")
             .option("inferSchema", "true")
+            .option("mode", "DROPMALFORMED")
             .option("timestampFormat", "yyyy/MM/dd HH:mm:ss ZZ")
-            .load("data_analytics/src/air_quality_2018_One_Day.csv");
+            .load("data_analytics/src/air_quality_2018_One_Year.csv");
 
-        rowDataset.show();
-        rowDataset.explain();
-        rowDataset.schema();
-
-        System.out.println(format("Number of Row Lines: %d", rowDataset.count()));
 
         LOGGER.info(format("Number of Row Lines: %d", rowDataset.count()));
 
@@ -73,10 +62,7 @@ public class SparkDriver {
 
         LOGGER.info(format("Records submitted to ES: %d", stationReadingJavaRDD.count()));
 
-        System.out.println(format("Records submitted to ES: %d", stationReadingJavaRDD.count()));
-
-        stationReadingJavaRDD.foreach(stationReadings -> System.out.println(stationReadings.toString()));
-        JavaEsSpark.saveToEs(stationReadingJavaRDD, "stations/day-readings");
+        JavaEsSpark.saveToEs(stationReadingJavaRDD, "stations-year-reading/year-readings");
 
         spark.stop();
     }
@@ -113,29 +99,25 @@ public class SparkDriver {
 
     private static StationReading rowToObject(Row row) {
 
-//        [time#0,geohash#1,P1#2,P2#3,temperature#4,humidity#5,pressure#6]
+        try {
+            if (isGeoHashInSofia(row.getString(1))) {
 
-        if (isGeoHashInSofia(row.getString(1))) {
+                Timestamp time = row.getTimestamp(0);
 
-            Timestamp time = row.getTimestamp(0);
-            GeoPoint geoHash = GeoPoint.fromGeohash(row.getString(1));
-            int P1 = row.getInt(2);
-            int P2 = row.getInt(3);
-            int temperature = row.getInt(4);
-            int humidity = row.getInt(5);
-            int pressure = row.getInt(6);
+                GeoPoint geopoint = new GeoPoint(
+                    org.elasticsearch.common.geo.GeoPoint.fromGeohash(row.getString(1)).getLat(),
+                    org.elasticsearch.common.geo.GeoPoint.fromGeohash(row.getString(1)).getLon());
+                long P1 = row.getInt(2);
+                long P2 = row.getInt(3);
+                long temperature = row.getInt(4);
+                long humidity = row.getInt(5);
+                long pressure = row.getInt(6);
 
-            LOGGER.info(format("time: %s geoHash: %s P1: %d P2: %d temperature: %d humidity: %d pressure: %d",
-                time,
-                geoHash,
-                P1,
-                P2,
-                temperature,
-                humidity,
-                pressure));
-
-            return new StationReading(time, geoHash, P1, P2, temperature, humidity, pressure);
-        }
+                return new StationReading(geopoint, humidity, P1, P2, pressure, temperature, time);
+            }
+        } catch (Throwable exception) { }
         return null;
     }
 }
+
+

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.air.quality.visual.analytics</groupId>
@@ -49,7 +50,8 @@
             <version>${log4j.version}</version>
         </dependency>
 
-        <!-- ES -->
+        <!-- ES API-->
+        <!--https://www.elastic.co/support/matrix#matrix_compatibility-->
 
         <dependency>
             <groupId>org.elasticsearch</groupId>
@@ -110,13 +112,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${sure.fire.version}</version>
-                <dependencies>
-                    <!--<dependency>-->
-                    <!--<groupId>org.junit.platform</groupId>-->
-                    <!--<artifactId>junit-platform-surefire-provider</artifactId>-->
-                    <!--<version>${junit.platform.version}</version>-->
-                    <!--</dependency>-->
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
