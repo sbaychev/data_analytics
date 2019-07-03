@@ -50,7 +50,7 @@ public class SparkDriver {
             .option("inferSchema", "true")
             .option("mode", "DROPMALFORMED")
             .option("timestampFormat", "yyyy/MM/dd HH:mm:ss ZZ")
-            .load("data_analytics/src/air_quality_2018_One_Year.csv");
+            .load("src/main/resources/air_quality_2018_One_Year.csv");
 
 
         LOGGER.info(format("Number of Row Lines: %d", rowDataset.count()));
